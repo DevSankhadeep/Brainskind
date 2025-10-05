@@ -127,53 +127,54 @@ export const updateProfile=async (req, res) => {
         const {fullname,email,phoneNumber,bio, skills}= req.body;
         const file=req.files;
 
+        // cloudinary upload can be added here using `file` if needed
 
+        const skillsArray = typeof skills === 'string' && skills.trim() !== ''
+            ? skills.split(',').map((s) => s.trim()).filter(Boolean)
+            : undefined;
 
-         if(!fullname || !email || !phoneNumber || !bio|| !skills){
-            return res.status(400).json({
-                message:"All fields are required",
+        const userId=req.userId; // set by auth middleware
+        let user=await User.findById(userId);
+        if(!user){
+            return res.status(404).json({
+                message:"User not found",
                 success: false,
             });
         }
 
+        // update database
+        if (fullname){
+            user.fullname=fullname;
+        }
+        if (email){
+            user.email=email;
+        }
+        if (phoneNumber){
+            user.phoneNumber=phoneNumber;
+        }
+        if (bio){
+            user.bio=bio;
+        }
+        if (skillsArray){
+            user.skills=skillsArray;
+        }
 
-//cloudinary upload
+        // resume file handling can be added here
+        await user.save();
 
-
-
-
-    const skillsArray=skills.split(",");
-    const userId=req.userId;//middleware
-    let user=await User.findById(userId);
-    if(!user){
-        return res.status(404).json({
-            message:"User not found",
-            success: false,
+        user={
+            _id:user._id,
+            fullname:user.fullname,
+            email:user.email,
+            phonenumber:user.phoneNumber,
+            role:user.role,
+            profile:user.profile,
+        };
+        return res.status(200).json({
+            message:"Profile updated successfully",
+            user,
+            success: true,  
         });
-
-    }
-
-user.fullname=fullname;
-user.email=email;
-user.phoneNumber=phoneNumber;
-user.profile = user.profile || {};
-user.profile.bio=bio;
-user.profile.skills=skillsArray;
-//resume file
-await user.save();
-user={
-    _id:user._id,
-    fullname:user.fullname,
-    email:user.email,
-    phonenumber:user.phoneNumber,
-    role:user.role,
-    profile:user.profile,
-};
-return res.status(200).json({
-    message:"Profile updated successfully",
-    user,
-    success: true,  
-    });
     }
     catch(error) {
         console.error(error);
