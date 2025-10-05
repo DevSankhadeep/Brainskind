@@ -28,5 +28,5 @@ app.use('/api/users',userRoutes); //localhost:5000/api/users/register
 
 app.listen(PORT,()=>{
     connectDB();
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT}`)
 });
