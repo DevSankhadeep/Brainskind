@@ -1,13 +1,13 @@
-import Job from '../models/job.model.js';
+import { Job } from '../models/job.model.js';
 //Admin job posting
 export const postJob = async (req,res) => {
     try {
         const { title, description, requirements, salary,location,jobType,position,companyId,experience } = req.body;
-        const userId = req.id;
+        const userId = req.userId;
         if (!title || !description || !requirements || !location || !salary || !jobType || !position || !companyId || !experience) {
             return res.status(400).json({ message: 'All fields are required', status: false});
         }
-        const job=await createImageBitmap({ title, description, requirements:requirements.split(","), salary:Number(salary),location,jobType,position,company:companyId,created_by:userId,experiencelevel:experience });
+        const job = await Job.create({ title, description, requirements: String(requirements), salary: String(salary), location, jobtype: jobType, position, company: companyId, created_by: userId, experience: Number(experience) });
         return res.status(201).json({ message: 'Job posted successfully', status: true, job });
 
     } catch(error){
@@ -26,13 +26,13 @@ export const getAllJobs = async (req,res) => {
             
             ],
         };
-        const jobs=await job.find(query).populate({
+        const jobs=await Job.find(query).populate({
             path: "company",
         }).sort({ createdAt: -1 });
         if(!jobs){
             return res.status(404).json({ message: 'No jobs found', status: false });
         }
-        return res.status(200).json({ message: 'Jobs fetched successfully', status: true });
+        return res.status(200).json({ message: 'Jobs fetched successfully', status: true, jobs });
         
     }catch(error){
         console.error(error);
@@ -61,7 +61,7 @@ export const getJobById = async (req,res) => {
 //Admin job created 
 export const getAdminJobs = async (req,res) => {
     try {
-        const adminId = req.id;
+        const adminId = req.userId;
         const jobs = await Job.find({ created_by: adminId });
         if (!jobs) {
             return res.status(400).json({ message: 'No jobs found', status: false });
@@ -73,3 +73,4 @@ export const getAdminJobs = async (req,res) => {
         return res.status(500).json({ message: 'Server error', status: false });
         
     }
+};

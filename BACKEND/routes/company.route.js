@@ -1,6 +1,6 @@
 import express from "express";
 
-import authenticateToken from "../middleware/isAuthenticated";
+import authenticateToken from "../middleware/isAuthenticated.js";
 import {
     getAllCompanies,
     getCompanyById,
