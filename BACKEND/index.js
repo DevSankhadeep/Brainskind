@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB from './utils/db.js';
 import userRoutes from './routes/user.routes.js';
+import jobRoute from './routes/job.route.js';
 dotenv.config();
 const app = express();
       
@@ -24,6 +25,8 @@ const PORT=process.env.PORT || 5001;
 
 //API'S
 app.use('/api/users',userRoutes); //localhost:5000/api/users/register
+app.use('/api/company',companyRoute);
+app.use("/api/job", jobRoute);
 
 
 app.listen(PORT,()=>{
