@@ -23,15 +23,12 @@ export const getAllJobs = async (req,res) => {
             $or:[ 
                 {title: { $regex: keyword, $options: 'i' } },
                 {description: { $regex: keyword, $options: 'i' } },
-                {requirements: { $regex: keyword, $options: 'i' } },
-                {location: { $regex: keyword, $options: 'i' } },
-                {jobtype: { $regex: keyword, $options: 'i' } },
-                {position: { $regex: keyword, $options: 'i' } },
-                {experience: { $regex: keyword, $options: 'i' } },  
-
+            
             ],
         };
-        const jobs=await job.find(query);
+        const jobs=await job.find(query).populate({
+            path: "company",
+        }).sort({ createdAt: -1 });
         if(!jobs){
             return res.status(404).json({ message: 'No jobs found', status: false });
         }
