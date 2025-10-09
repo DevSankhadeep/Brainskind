@@ -61,3 +61,53 @@ export const getAppliedJobs = async (req, res) => {
 };
 
 
+// Get applicants for a specific job (typically for job poster/admin)
+export const getApplicants = async (req, res) => {
+    try {
+        const jobId = req.params.id;
+        if (!jobId) {
+            return res.status(400).json({ message: 'Invalid job id', status: false });
+        }
+
+        const applications = await Application.find({ job: jobId })
+            .sort({ createdAt: -1 })
+            .populate({
+                path: 'applicant',
+                // select can be adjusted based on privacy needs
+            });
+
+        return res.status(200).json({ status: true, applications });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Server error', status: false });
+    }
+};
+
+// Update application status (accepted/rejected/pending)
+export const updateStatus = async (req, res) => {
+    try {
+        const applicationId = req.params.id;
+        const { status } = req.body;
+
+        const allowedStatuses = ['pending', 'accepted', 'rejected'];
+        if (!allowedStatuses.includes(status)) {
+            return res.status(400).json({ message: 'Invalid status value', status: false });
+        }
+
+        const updated = await Application.findByIdAndUpdate(
+            applicationId,
+            { status },
+            { new: true }
+        );
+
+        if (!updated) {
+            return res.status(404).json({ message: 'Application not found', status: false });
+        }
+
+        return res.status(200).json({ message: 'Status updated successfully', status: true, application: updated });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Server error', status: false });
+    }
+};
+
