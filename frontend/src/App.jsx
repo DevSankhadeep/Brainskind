@@ -1,12 +1,33 @@
-import React from 'react'
-import Navbar from './components/ui/components_lite/Navbar'
+import React from "react";
+import Navbar from "./components/ui/components_lite/Navbar";
+import Login from "./components/authentication/Login";
+import Register from "./components/authentication/Register";
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Home from "./components/ui/components_lite/Home";
+
+
+const appRouter = createBrowserRouter([
+  { path:"/",
+    element: <Home />
+
+  },
+  {
+    path: "/login",
+    element: <Login />
+  },
+  { 
+    path: "/register",
+    element: <Register />
+  },
+])
+
 
 function App() {
   return (
     <div>
-    <Navbar></Navbar> 
+     <RouterProvider router={appRouter}></RouterProvider>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
