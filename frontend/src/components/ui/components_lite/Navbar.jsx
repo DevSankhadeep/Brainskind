@@ -1,9 +1,9 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { Button } from '../button'
-import { Avatar, AvatarImage, AvatarFallback } from '../avatar'
-import { Popover, PopoverTrigger, PopoverContent } from '../popover'
-import { LogOut, User2 } from 'lucide-react'
+import React from "react";
+import { Link } from "react-router-dom";
+import { Button } from "../button";
+import { Avatar, AvatarImage, AvatarFallback } from "../avatar";
+import { Popover, PopoverTrigger, PopoverContent } from "../popover";
+import { LogOut, User2 } from "lucide-react";
 
 const Navbar = () => {
   const user = false // change to true to see the logged-in UI
@@ -26,13 +26,11 @@ const Navbar = () => {
 
           {!user ? (
             <div className="flex items-center gap-2">
-              <Link to={/login}>
-               {" "}
-              <Button variant="outline">Login</Button>
+              <Link to="/login">
+                <Button variant="outline">Login</Button>
               </Link>
-              <Link to={/register}>
-               {" "}
-              <Button className="bg-red-400">Register</Button>
+              <Link to="/register">
+                <Button className="bg-red-400">Register</Button>
               </Link>
             </div>
           ) : (
@@ -75,7 +73,7 @@ const Navbar = () => {
 
       </div>
     </header>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;
